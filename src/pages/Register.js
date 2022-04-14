@@ -11,9 +11,9 @@ const Register = () => {
   const navigate = useNavigate();
 
 
-  const handleSubmit = () => {
-    createUser(email, password);
-    navigate("/")
+  const handleSubmit = (e) => {
+    const displayName= `${firstName} ${lastName}`;
+    createUser(email, password, displayName, navigate);
     console.log(firstName, lastName, navigate);
   }
   return (
