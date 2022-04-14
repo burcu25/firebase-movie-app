@@ -2,6 +2,8 @@ import axios from "axios";
 import React, { useContext, useEffect, useState } from "react";
 import MovieCard from "../components/MovieCard";
 import { AuthContext } from "../context/AuthContext";
+import { toastWarnNotify } from "../helpers/ToastNotify";
+
 
 // const API_KEY = "b38ec4edd23052e0e856ad01981beadf";
 const API_KEY = process.env.REACT_APP_TMDB_KEY;
@@ -33,9 +35,11 @@ const Main = () => {
     if(searchTerm && currentUser){
       getMovies(SEARCH_API + searchTerm)
     } else if(!currentUser){
-      alert("Please login to search a movie.");
+      // alert("Please login to search a movie.");
+      toastWarnNotify("Please log in to search a movie");
     }else{
-      alert("Please enter a text..")
+      toastWarnNotify("Please enter a text");
+      // alert("Please enter a text..")
     }
   };
 

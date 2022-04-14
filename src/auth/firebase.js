@@ -2,16 +2,23 @@ import { initializeApp } from "firebase/app";
 import {
   createUserWithEmailAndPassword,
   getAuth,
-  onAuthStateChanged,
-  signInWithEmailAndPassword,
   GoogleAuthProvider,
+  onAuthStateChanged,
+  sendPasswordResetEmail,
+  signInWithEmailAndPassword,
+  signInWithPopup,
   signOut,
   updateProfile,
-  signInWithPopup,
 } from "firebase/auth";
+import {
+  toastErrorNotify,
+  toastSuccessNotify,
+  toastWarnNotify,
+} from "../helpers/ToastNotify";
 
-// https://firebase.google.com/docs/auth/web/start
-/// https://console.firebase.google.com/ => project settings
+//* https://firebase.google.com/docs/auth/web/start
+//* https://console.firebase.google.com/ => project settings
+//! firebase console settings bölümünden firebaseconfig ayarlarını al
 const firebaseConfig = {
   apiKey: process.env.REACT_APP_apiKey,
   authDomain: process.env.REACT_APP_authDomain,
@@ -20,56 +27,71 @@ const firebaseConfig = {
   messagingSenderId: process.env.REACT_APP_messagingSenderId,
   appId: process.env.REACT_APP_appId,
 };
+// const firebaseConfig = {
+//   apiKey: "AIzaSyDepuZMhyRTrcVvY0TGZhR_Bl6P2mLp2DQ",
+//   authDomain: "movie-app-4d931.firebaseapp.com",
+//   projectId: "movie-app-4d931",
+//   storageBucket: "movie-app-4d931.appspot.com",
+//   messagingSenderId: "414268290758",
+//   appId: "1:414268290758:web:538a777ecd93727bc309c7",
+// };
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
-
 // Initialize Firebase Authentication and get a reference to the service
 const auth = getAuth(app);
 
-export const createUser = async (email, password, navigate, displayName) => {
+export const createUser = async (email, password, displayName, navigate) => {
   try {
+    //? yeni bir kullanıcı oluşturmak için kullanılan firebase metodu
     let userCredential = await createUserWithEmailAndPassword(
       auth,
       email,
       password
     );
+    //? kullanıcı profilini güncellemek için kullanılan firebase metodu
     await updateProfile(auth.currentUser, {
       displayName: displayName,
     });
     navigate("/");
+    toastSuccessNotify("Registered successfully!");
     console.log(userCredential);
   } catch (err) {
-    alert(err.message);
+    toastErrorNotify(err.message);
+    // alert(err.message);
   }
 };
 
 //* https://console.firebase.google.com/
 //* => Authentication => sign-in-method => enable Email/password
+//! Email/password ile girişi enable yap
 export const signIn = async (email, password, navigate) => {
   try {
+    //? mevcut kullanıcının giriş yapması için kullanılan firebase metodu
     let userCredential = await signInWithEmailAndPassword(
       auth,
       email,
       password
     );
     navigate("/");
+    toastSuccessNotify("Logged in successfully!");
     console.log(userCredential);
   } catch (err) {
-    alert(err.message);
+    toastErrorNotify(err.message);
+    // alert(err.message);
   }
 };
 
 export const logOut = () => {
   signOut(auth);
-  alert("logged out successfully");
+  toastSuccessNotify("Logged out successfully!");
 };
 
 export const userObserver = (setCurrentUser) => {
+  //? Kullanıcının signin olup olmadığını takip eden ve kullanıcı değiştiğinde yeni kullanıcıyı response olarak dönen firebase metodu
   onAuthStateChanged(auth, (currentUser) => {
     if (currentUser) {
       setCurrentUser(currentUser);
-      // ...
     } else {
       // User is signed out
       setCurrentUser(false);
@@ -78,10 +100,12 @@ export const userObserver = (setCurrentUser) => {
 };
 
 //* https://console.firebase.google.com/
-//* => Authentication => sign-in-method => enable Google/
-
+//* => Authentication => sign-in-method => enable Google
+//! Google ile girişi enable yap
 export const signUpProvider = (navigate) => {
+  //? Google ile giriş yapılması için kullanılan firebase metodu
   const provider = new GoogleAuthProvider();
+  //? Açılır pencere ile giriş yapılması için kullanılan firebase metodu
   signInWithPopup(auth, provider)
     .then((result) => {
       console.log(result);
@@ -90,6 +114,20 @@ export const signUpProvider = (navigate) => {
     .catch((error) => {
       // Handle Errors here.
       console.log(error);
-      // ...
+    });
+};
+
+export const forgotPassword = (email) => {
+  //? Email yoluyla şifre sıfırlama için kullanılan firebase metodu
+  sendPasswordResetEmail(auth, email)
+    .then(() => {
+      // Password reset email sent!
+      toastWarnNotify("Please check your mail box!");
+      // alert("Please check your mail box!");
+    })
+    .catch((err) => {
+      toastErrorNotify(err.message);
+      // alert(err.message);
+      // ..
     });
 };
