@@ -6,8 +6,8 @@ function App() {
   return (
     <div className="App">
       <AuthContextProvider>
-      <AppRouter/>
-      <ToastContainer />
+        <AppRouter />
+        <ToastContainer />
       </AuthContextProvider>
     </div>
   );
