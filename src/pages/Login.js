@@ -1,25 +1,21 @@
-import React, { useContext, useState } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { forgotPassword, signIn, signUpProvider } from "../auth/firebase";
-import { AuthContext } from "../context/AuthContext";
 
 const Login = () => {
   const [email, setEmail] = useState();
   const [password, setPassword] = useState();
   const navigate = useNavigate();
-  const {currentUser} = useContext(AuthContext);
-
 
   const handleSubmit = (e) => {
     e.preventDefault();
     signIn(email, password, navigate);
-    console.log(email, password, currentUser.displayName);
+    console.log(email, password);
   };
 
   const handleProviderLogin = () => {
     signUpProvider(navigate);
   };
-
   return (
     <div className="d-flex justify-content-center">
       {window.innerWidth > 700 && (
@@ -29,7 +25,6 @@ const Login = () => {
       )}
       <div className="register-form">
         <h1 className="form-title display-3">Login</h1>
-
         <form id="register" onSubmit={handleSubmit}>
           <div className="mb-3">
             <label htmlFor="email" className="form-label">
@@ -37,22 +32,24 @@ const Login = () => {
             </label>
             <input
               type="email"
-              placeholder="Enter your email..."
-              id="email"
               className="form-control"
-              required
+              id="email"
+              placeholder="Enter your email adress.."
               onChange={(e) => setEmail(e.target.value)}
+              required
             />
+          </div>
+          <div className="mb-3">
             <label htmlFor="password" className="form-label">
               Password
             </label>
             <input
               type="password"
-              placeholder="Enter your password..."
-              id="password"
               className="form-control"
-              required
+              id="password"
+              placeholder="Enter your password.."
               onChange={(e) => setPassword(e.target.value)}
+              required
             />
           </div>
           <div className="link" onClick={() => forgotPassword(email)}>
@@ -62,7 +59,7 @@ const Login = () => {
             type="submit"
             className="btn btn-primary form-control"
             value="Login"
-            // onClick={handleSubmit}
+            // onSubmit={handleSubmit}
           />
         </form>
         <button

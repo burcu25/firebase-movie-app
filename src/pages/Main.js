@@ -13,7 +13,7 @@ const SEARCH_API = `https://api.themoviedb.org/3/search/movie?api_key=${API_KEY}
 const Main = () => {
 
     const [movies, setMovies] = useState([]);
-    const [searchTerm, setSearchTerm] = useState([]);
+    const [searchTerm, setSearchTerm] = useState("");
     const {currentUser} = useContext(AuthContext);
 
 

@@ -1,16 +1,12 @@
-import axios from 'axios';
-import React, { useEffect, useState } from 'react'
-import { Link, useParams } from 'react-router-dom';
+import axios from "axios";
+import React, { useEffect, useState } from "react";
+import { Link, useParams } from "react-router-dom";
 import VideoSection from "../components/VideoSection";
 
-
 const MovieDetail = () => {
-
-  const {id} = useParams();
+  const { id } = useParams();
   const [movieDetails, setMovieDetails] = useState();
   const [videoKey, setVideoKey] = useState();
-
-
 
   const API_KEY = process.env.REACT_APP_TMDB_KEY;
   // const API_KEY = "b38ec4edd23052e0e856ad01981beadf";
@@ -20,16 +16,17 @@ const MovieDetail = () => {
   const defaultImage =
     "https://images.unsplash.com/photo-1581905764498-f1b60bae941a?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=700&q=80";
 
-
-    useEffect(() => {
-      axios.get(movieDetailBaseUrl).then((res) =>setMovieDetails(res.data)).catch((err)=> console.log(err));
-      axios
+  useEffect(() => {
+    axios
+      .get(movieDetailBaseUrl)
+      .then((res) => setMovieDetails(res.data))
+      .catch((err) => console.log(err));
+    axios
       .get(videoUrl)
       .then((res) => setVideoKey(res.data.results[0].key))
       .catch((err) => console.log(err));
-      
-    }, [movieDetailBaseUrl, videoUrl])
-    
+  }, [movieDetailBaseUrl, videoUrl]);
+
   return (
     <div className="container py-5">
       <h1 className="text-center">{movieDetails?.title}</h1>
@@ -72,7 +69,7 @@ const MovieDetail = () => {
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default MovieDetail
+export default MovieDetail;
